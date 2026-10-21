@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HSK 2 · Урок 1</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 820px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            padding: 30px 28px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+        h1 { font-size: 26px; margin-bottom: 4px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        h1 small { font-size: 15px; font-weight: 400; color: #5b6f82; }
+        .stats { display: flex; gap: 24px; margin: 12px 0 22px; font-size: 15px; color: #1e2a3a; flex-wrap: wrap; }
+        .stats span { background: #eef2f7; padding: 4px 16px; border-radius: 40px; }
+        .block-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+        .block-nav button {
+            padding: 8px 18px; border: 2px solid #d0d9e3; background: transparent; border-radius: 40px;
+            font-weight: 600; font-size: 14px; color: #1e2a3a; cursor: pointer; transition: 0.2s;
+        }
+        .block-nav button.active { background: #1e2a3a; border-color: #1e2a3a; color: white; }
+        .block-nav button:hover:not(.active) { background: #e6ecf3; }
+        
+        .exercise {
+            background: #f8faff; border-radius: 18px; padding: 22px 24px; margin-bottom: 20px; border-left: 5px solid #3b6ea5;
+        }
+        .exercise .q { font-size: 17px; font-weight: 500; margin-bottom: 14px; line-height: 1.6; }
+        .exercise .q .big-char { font-size: 28px; font-weight: 300; }
+        
+        .exercise .options { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+        .exercise .options button {
+            padding: 12px 24px; border: 2px solid #d0d9e3; background: white; border-radius: 40px;
+            font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.2s; flex: 1 0 auto; min-width: 80px;
+        }
+        .exercise .options button:hover:not(.disabled) { background: #e6ecf3; border-color: #1e2a3a; }
+        .exercise .options button.correct-answer { border-color: #1f8b4c; background: #e1f5e8; color: #0d5e2e; }
+        .exercise .options button.wrong-answer { border-color: #a12b2b; background: #ffe9e9; color: #a12b2b; }
+        .exercise .options button.disabled { pointer-events: none; opacity: 0.7; }
+        
+        .feedback { margin-top: 14px; padding: 12px 16px; border-radius: 14px; font-weight: 500; display: none; }
+        .feedback.correct { display: block; background: #e1f5e8; color: #0d5e2e; }
+        .feedback.wrong { display: block; background: #ffe9e9; color: #a12b2b; }
+        .feedback .answer { font-weight: 400; margin-top: 4px; color: #1e2a3a; }
+        
+        .sentence-builder .words {
+            display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; justify-content: center;
+        }
+        .sentence-builder .words button {
+            padding: 10px 20px; border: 2px solid #d0d9e3; background: white; border-radius: 40px;
+            font-size: 16px; cursor: pointer; transition: 0.2s;
+        }
+        .sentence-builder .words button:hover:not(.used) { background: #e6ecf3; }
+        .sentence-builder .words button.used { opacity: 0.3; pointer-events: none; }
+        .sentence-builder .build-area {
+            display: flex; flex-wrap: wrap; gap: 8px; min-height: 50px; padding: 12px;
+            background: #f8faff; border-radius: 14px; border: 2px dashed #d0d9e3; margin: 12px 0; align-items: center;
+        }
+        .sentence-builder .build-area .word-chip {
+            padding: 8px 16px; background: #1e2a3a; color: white; border-radius: 40px;
+            font-size: 16px; cursor: pointer; transition: 0.2s;
+        }
+        .sentence-builder .build-area .word-chip:hover { background: #2c3c50; }
+        
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+        .btn {
+            padding: 10px 26px; border: none; border-radius: 40px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-primary { background: #1e2a3a; color: white; }
+        .btn-primary:hover { background: #2c3c50; }
+        .btn-outline { background: transparent; border: 2px solid #d0d9e3; color: #1e2a3a; }
+        .btn-outline:hover { background: #e6ecf3; }
+        
+        .footer-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; justify-content: space-between; align-items: center; }
+        .reset-btn { background: transparent; border: none; color: #7a8b9e; font-size: 14px; cursor: pointer; text-decoration: underline; }
+        .reset-btn:hover { color: #1e2a3a; }
+
+        @media (max-width: 500px) {
+            .container { padding: 16px; }
+            .exercise { padding: 16px; }
+            .exercise .options button { padding: 10px 16px; font-size: 15px; min-width: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <h1>📖 HSK 2 · Урок 1 <small>Повторение</small></h1>
+    <div class="stats">
+        <span>✅ <span id="correctCount">0</span></span>
+        <span>📝 <span id="totalCount">0</span></span>
+    </div>
+    <div class="block-nav" id="navBlocks"></div>
+    <div id="exercisesContainer"></div>
+    <div class="footer-actions">
+        <button class="reset-btn" id="resetProgress">♻️ Сбросить прогресс</button>
+    </div>
+</div>
+
+<script>
+    const blocks = [
+        {
+            id: 'vocab',
+            label: '1️⃣ Слова',
+            type: 'choice',
+            exercises: [
+                { question: 'Как переводится <span class="big-char">帮忙</span>?', correct: ['помогать'], options: ['путешествовать', 'помогать', 'представлять'] },
+                { question: 'Как переводится <span class="big-char">旅游</span>?', correct: ['путешествовать'], options: ['уже', 'тогда', 'путешествовать'] },
+                { question: 'Как переводится <span class="big-char">介绍</span>?', correct: ['представлять / знакомить'], options: ['понимать', 'представлять / знакомить', 'иногда'] },
+                { question: 'Как переводится <span class="big-char">懂</span>?', correct: ['понимать'], options: ['помогать', 'уже', 'понимать'] },
+                { question: 'Как переводится <span class="big-char">意思</span>?', correct: ['значение / смысл'], options: ['значение / смысл', 'путешествие', 'помощь'] },
+                { question: 'Как переводится <span class="big-char">已经</span>?', correct: ['уже'], options: ['тогда', 'уже', 'иногда'] },
+                { question: 'Как переводится <span class="big-char">那</span>?', correct: ['тогда / в таком случае'], options: ['уже', 'иногда', 'тогда / в таком случае'] },
+                { question: 'Как переводится <span class="big-char">有时</span>?', correct: ['иногда'], options: ['иногда', 'уже', 'тогда'] },
+                { question: 'Как переводится <span class="big-char">北京烤鸭</span>?', correct: ['утка по-пекински'], options: ['пекинская лапша', 'утка по-пекински', 'жареный рис'] }
+            ]
+        },
+        {
+            id: 'tones',
+            label: '2️⃣ Тоны',
+            type: 'choice',
+            exercises: [
+                { question: 'Выбери правильный пиньинь для <span class="big-char">不好意思</span>', correct: ['bùhǎoyìsi'], options: ['bùhǎoyìsi', 'bùhàoyìsi', 'bùhǎoyìsī', 'búhǎoyìsi'] },
+                { question: 'Выбери правильный пиньинь для <span class="big-char">帮忙</span>', correct: ['bāngmáng'], options: ['bāngmǎng', 'bàngmáng', 'bāngmáng', 'bǎngmáng'] },
+                { question: 'Выбери правильный пиньинь для <span class="big-char">介绍</span>', correct: ['jièshào'], options: ['jiěshào', 'jièshāo', 'jiēshào', 'jièshào'] },
+                { question: 'Выбери правильный пиньинь для <span class="big-char">旅游</span>', correct: ['lǚyóu'], options: ['lùyóu', 'lǚyǒu', 'lǔyóu', 'lǚyóu'] },
+                { question: 'Выбери правильный пиньинь для <span class="big-char">意思</span>', correct: ['yìsi'], options: ['yīsi', 'yìsī', 'yísì', 'yìsi'] },
+                { question: 'Выбери правильный пиньинь для <span class="big-char">已经</span>', correct: ['yǐjīng'], options: ['yījīng', 'yǐjìng', 'yíjīng', 'yǐjīng'] },
+                { question: 'Выбери правильный пиньинь для <span class="big-char">有时</span>', correct: ['yǒushí'], options: ['yǒushǐ', 'yōushí', 'yóushí', 'yǒushí'] },
+                { question: 'Выбери правильный пиньинь для <span class="big-char">北京烤鸭</span>', correct: ['Běijīng kǎoyā'], options: ['Běijīng kāoyā', 'Bèijīng kǎoyā', 'Běijìng kǎoyā', 'Běijīng kǎoyā'] }
+            ]
+        },
+        {
+            id: 'grammar1',
+            label: '3️⃣ 请/让/叫',
+            type: 'choice',
+            exercises: [
+                { question: 'Выбери правильное предложение: «Учитель попросил нас говорить по-китайски».', correct: ['王老师让我们说中文。'], options: ['王老师我们说中文让。', '我们让王老师说中文。', '王老师让我们说中文。'] },
+                { question: 'Выбери правильное предложение: «Мама зовёт детей домой».', correct: ['妈妈叫孩子们回家。'], options: ['妈妈孩子们叫回家。', '妈妈叫孩子们回家。', '孩子们叫妈妈回家。'] },
+                { question: 'Выбери правильное предложение: «Я хочу попросить тебя об одной услуге».', correct: ['我想请你帮个忙。'], options: ['我想帮忙请你个。', '请你我想帮个忙。', '我想请你帮个忙。'] },
+                { question: 'Вставь правильный глагол: 王老师 ______ 我们休息一下。', correct: ['让'], options: ['吧', '让', '是'] },
+                { question: 'Вставь правильный глагол: 我想 ______ 你帮我一下。', correct: ['请'], options: ['叫', '让', '请'] },
+                { question: 'Вставь правильный глагол: 妈妈 ______ 我去买些菜。', correct: ['叫'], options: ['请', '让', '叫'] }
+            ]
+        },
+        {
+            id: 'grammar2',
+            label: '4️⃣ 吧 и 是……的',
+            type: 'choice',
+            exercises: [
+                { question: 'Выбери правильное предложение с 吧: «Вы, наверное, её студенты?»', correct: ['你们就是她的学生吧？'], options: ['你们就是她的学生吗？', '你们就是她的学生吧？', '你们就是她的学生呢？'] },
+                { question: 'Выбери правильное предложение с 吧: «Она, наверное, хорошо поёт?»', correct: ['她唱歌很好听吧？'], options: ['她唱歌很好听吗？', '她唱歌很好听呢？', '她唱歌很好听吧？'] },
+                { question: 'Выбери правильное предложение с 是……的 (место): «Я познакомился с Аней в книжном магазине».', correct: ['我是在书店认识安妮的。'], options: ['我是认识安妮在书店的。', '我在书店是认识安妮的。', '我是在书店认识安妮的。'] },
+                { question: 'Выбери правильное предложение с 是……的 (способ): «Мы приехали сюда путешествовать».', correct: ['我们是来旅游的。'], options: ['我们是来旅游的。', '我们是旅游来的。', '我们来是旅游的。'] },
+                { question: 'Выбери правильное предложение с 是……的 (время): «Я пришёл в школу в 8 часов».', correct: ['我今天是八点到学校的。'], options: ['我是今天八点到学校的。', '我今天八点是到学校的。', '我今天是八点到学校的。'] },
+                { question: 'Заверши диалог: A: 你是坐车来学校的吗？ B: ______', correct: ['我是坐车来学校的。'], options: ['我坐车来学校是。', '是坐车我来的学校。', '我是坐车来学校的。'] }
+            ]
+        },
+        {
+            id: 'sentences',
+            label: '5️⃣ Составь предложение',
+            type: 'sentence',
+            exercises: [
+                { words: ['请', '我', '你', '帮个忙', '。'], correct: '我请你帮个忙。' },
+                { words: ['让', '王老师', '我们', '说中文', '。'], correct: '王老师让我们说中文。' },
+                { words: ['叫', '妈妈', '孩子们', '回家', '。'], correct: '妈妈叫孩子们回家。' },
+                { words: ['我们', '是', '来旅游', '的', '。'], correct: '我们是来旅游的。' },
+                { words: ['我', '是', '在书店', '认识安妮', '的', '。'], correct: '我是在书店认识安妮的。' },
+                { words: ['你们', '就是', '她的学生', '吧', '？'], correct: '你们就是她的学生吧？' },
+                { words: ['她', '唱歌', '很好听', '吧', '？'], correct: '她唱歌很好听吧？' },
+                { words: ['我', '今天', '是', '八点', '到学校', '的', '。'], correct: '我今天是八点到学校的。' }
+            ]
+        },
+        {
+            id: 'translation',
+            label: '6️⃣ Перевод',
+            type: 'choice',
+            exercises: [
+                { question: 'Переведи: «Я уже приехал в Пекин».', correct: ['我已经到北京了。'], options: ['我到已经北京了。', '我已经到北京了。', '我已经北京到了。'] },
+                { question: 'Переведи: «Она угостила нас уткой по-пекински».', correct: ['她请我们吃了北京烤鸭。'], options: ['她吃了请我们北京烤鸭。', '北京烤鸭请我们吃了她。', '她请我们吃了北京烤鸭。'] },
+                { question: 'Переведи: «Наш китайский не очень хороший, иногда мы не понимаем её».', correct: ['我们的中文不太好，有时不太懂她的意思。'], options: ['我们的中文不太好，她的意思有时不太懂我们。', '我们的中文不太好，有时不太懂她的意思。', '有时我们的中文不太好，不懂她的意思。'] },
+                { question: 'Переведи: «В эти дни я не занят, если у вас есть дела, обращайтесь ко мне».', correct: ['我这几天都不忙，你们有事就找我。'], options: ['我这几天都不忙，我找你们有事就。', '你们这几天都不忙，我有事就找你们。', '我这几天都不忙，你们有事就找我。'] },
+                { question: 'Переведи: «Извините, Тяньчжун, я уже приехал в Пекин».', correct: ['不好意思，天中，我已经到北京了。'], options: ['不好意思，我已经到北京了，天中。', '天中不好意思，到北京我已经了。', '不好意思，天中，我已经到北京了。'] }
+            ]
+        }
+    ];
+
+    let state = {
+        currentBlock: blocks[0].id,
+        answers: {},
+        feedback: {},
+        correctTotal: 0,
+        totalAnswered: 0,
+        sentenceBuild: {}
+    };
+
+    function renderNav() {
+        const nav = document.getElementById('navBlocks');
+        nav.innerHTML = blocks.map(b =>
+            `<button class="${state.currentBlock === b.id ? 'active' : ''}" data-block="${b.id}">${b.label}</button>`
+        ).join('');
+        nav.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.currentBlock = btn.dataset.block;
+                render();
+            });
+        });
+    }
+
+    function renderExercises() {
+        const container = document.getElementById('exercisesContainer');
+        const block = blocks.find(b => b.id === state.currentBlock);
+        if (!block) return;
+
+        if (block.type === 'choice') {
+            container.innerHTML = block.exercises.map((ex, idx) => {
+                const key = `${block.id}-${idx}`;
+                const userAnswer = state.answers[key] || '';
+                const fb = state.feedback[key] || null;
+                return renderChoiceExercise(key, ex, userAnswer, fb);
+            }).join('');
+        } else if (block.type === 'sentence') {
+            container.innerHTML = block.exercises.map((ex, idx) => {
+                const key = `${block.id}-${idx}`;
+                const fb = state.feedback[key] || null;
+                return renderSentenceExercise(key, ex, fb);
+            }).join('');
+        }
+
+        attachEvents(block);
+    }
+
+    function renderChoiceExercise(key, ex, userAnswer, fb) {
+        const isAnswered = fb !== null;
+        let feedbackHTML = '';
+        if (fb === 'correct') {
+            feedbackHTML = `<div class="feedback correct">✅ Правильно!</div>`;
+        } else if (fb === 'wrong') {
+            feedbackHTML = `<div class="feedback wrong">❌ Неверно <div class="answer">👉 Правильный ответ: <strong>${ex.correct[0]}</strong></div></div>`;
+        }
+
+        let optionsHTML = ex.options.map(opt => {
+            let btnClass = '';
+            if (isAnswered) {
+                btnClass += ' disabled ';
+                if (opt === ex.correct[0]) btnClass += ' correct-answer ';
+                if (userAnswer === opt && opt !== ex.correct[0]) btnClass += ' wrong-answer ';
+            }
+            return `<button class="${btnClass}" data-value="${opt}" data-key="${key}" ${isAnswered ? 'disabled' : ''}>${opt}</button>`;
+        }).join('');
+
+        return `
+            <div class="exercise" data-key="${key}">
+                <div class="q">${ex.question}</div>
+                <div class="options">${optionsHTML}</div>
+                ${feedbackHTML}
+            </div>
+        `;
+    }
+
+    function renderSentenceExercise(key, ex, fb) {
+        if (!state.sentenceBuild[key]) {
+            state.sentenceBuild[key] = { used: [], selected: [] };
+        }
+        const build = state.sentenceBuild[key];
+        const isAnswered = fb !== null;
+
+        let wordsHTML = ex.words.map((w, i) => {
+            const isUsed = build.used.includes(i);
+            return `<button class="${isUsed ? 'used' : ''}" data-index="${i}" ${isAnswered ? 'disabled' : ''}>${w}</button>`;
+        }).join('');
+
+        let buildAreaHTML = build.selected.map((w, i) =>
+            `<span class="word-chip" data-index="${i}">${w}</span>`
+        ).join('');
+
+        let feedbackHTML = '';
+        if (fb === 'correct') {
+            feedbackHTML = `<div class="feedback correct">✅ Правильно! ${ex.correct}</div>`;
+        } else if (fb === 'wrong') {
+            feedbackHTML = `<div class="feedback wrong">❌ Неверно <div class="answer">👉 Правильный ответ: <strong>${ex.correct}</strong></div></div>`;
+        }
+
+        return `
+            <div class="exercise sentence-builder" data-key="${key}">
+                <div class="q">Составь предложение из слов:</div>
+                <div class="words">${wordsHTML}</div>
+                <div class="build-area">${buildAreaHTML || 'Нажми на слова, чтобы собрать предложение'}</div>
+                <div class="btn-group">
+                    <button class="btn btn-primary check-sentence" data-key="${key}" ${isAnswered ? 'disabled' : ''}>Проверить</button>
+                    <button class="btn btn-outline clear-sentence" data-key="${key}" ${isAnswered ? 'disabled' : ''}>Очистить</button>
+                    <button class="btn btn-outline reveal-btn" data-key="${key}">Показать ответ</button>
+                </div>
+                ${feedbackHTML}
+            </div>
+        `;
+    }
+
+    function attachEvents(block) {
+        const container = document.getElementById('exercisesContainer');
+
+        container.querySelectorAll('.options button:not(.disabled)').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                const value = btn.dataset.value;
+                const ex = getExerciseByKey(key);
+                if (!ex) return;
+                state.answers[key] = value;
+                const isCorrect = value === ex.correct[0];
+                state.feedback[key] = isCorrect ? 'correct' : 'wrong';
+                recalcStats();
+                render();
+            });
+        });
+
+        container.querySelectorAll('.sentence-builder').forEach(el => {
+            const key = el.dataset.key;
+            const ex = getExerciseByKey(key);
+            if (!ex) return;
+
+            el.querySelectorAll('.words button:not(.used)').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.dataset.index);
+                    const build = state.sentenceBuild[key];
+                    if (!build.used.includes(idx)) {
+                        build.used.push(idx);
+                        build.selected.push(ex.words[idx]);
+                        render();
+                    }
+                });
+            });
+
+            el.querySelectorAll('.build-area .word-chip').forEach((chip, i) => {
+                chip.addEventListener('click', () => {
+                    const build = state.sentenceBuild[key];
+                    const word = build.selected[i];
+                    const idx = ex.words.indexOf(word);
+                    if (idx !== -1) {
+                        build.used = build.used.filter(j => j !== idx);
+                        build.selected.splice(i, 1);
+                        render();
+                    }
+                });
+            });
+
+            el.querySelector('.clear-sentence')?.addEventListener('click', () => {
+                state.sentenceBuild[key] = { used: [], selected: [] };
+                render();
+            });
+
+            el.querySelector('.check-sentence')?.addEventListener('click', () => {
+                const build = state.sentenceBuild[key];
+                const userSentence = build.selected.join('');
+                const isCorrect = userSentence === ex.correct.replace(/[。，,?]/g, '');
+                state.answers[key] = userSentence;
+                state.feedback[key] = isCorrect ? 'correct' : 'wrong';
+                recalcStats();
+                render();
+            });
+        });
+
+        container.querySelectorAll('.reveal-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                const ex = getExerciseByKey(key);
+                if (!ex) return;
+                if (block.type === 'sentence') {
+                    state.feedback[key] = 'correct';
+                    state.answers[key] = ex.correct;
+                    const build = state.sentenceBuild[key];
+                    build.selected = ex.words.slice();
+                    build.used = ex.words.map((_, i) => i);
+                } else {
+                    state.answers[key] = ex.correct[0];
+                    state.feedback[key] = 'correct';
+                }
+                recalcStats();
+                render();
+            });
+        });
+    }
+
+    function getExerciseByKey(key) {
+        const [blockId, idx] = key.split('-');
+        const block = blocks.find(b => b.id === blockId);
+        if (!block) return null;
+        return block.exercises[parseInt(idx)] || null;
+    }
+
+    function recalcStats() {
+        let correct = 0, answered = 0;
+        for (const [key, val] of Object.entries(state.feedback)) {
+            if (val === 'correct') correct++;
+            if (val !== null) answered++;
+        }
+        state.correctTotal = correct;
+        state.totalAnswered = answered;
+    }
+
+    function updateStats() {
+        document.getElementById('correctCount').textContent = state.correctTotal;
+        document.getElementById('totalCount').textContent = state.totalAnswered;
+    }
+
+    function render() {
+        renderNav();
+        renderExercises();
+        updateStats();
+    }
+
+    document.getElementById('resetProgress').addEventListener('click', () => {
+        if (confirm('Сбросить весь прогресс?')) {
+            state.answers = {};
+            state.feedback = {};
+            state.sentenceBuild = {};
+            state.correctTotal = 0;
+            state.totalAnswered = 0;
+            render();
+        }
+    });
+
+    render();
+</script>
+</body>
+</html>
